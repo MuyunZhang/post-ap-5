@@ -18,7 +18,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     private JButton reset;
 
-    private boolean paused;
+    private boolean paused = false;
 
     private boolean set = false;
 
@@ -51,18 +51,16 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         super.paintComponent(g);  // just do this
         g.drawImage(background, 0, 0, null);  // the order that things get "painted" matter; we put background down first
         g.drawImage(player.getPlayerImage(), player.getxCoord(), player.getyCoord(), null);
-        paused = false;
-        if(paused){
+        if (paused) {
             timer.stop();
-        }
-        else{
+        } else {
             timer.start();
         }
 
         // this loop does two things:  it draws each Coin that gets placed with mouse clicks,
         // and it also checks if the player has "intersected" (collided with) the Coin, and if so,
         // the score goes up and the Coin is removed from the arraylist
-        if(!paused) {
+        if (!paused) {
             for (int i = 0; i < coins.size(); i++) {
                 Coin coin = coins.get(i);
                 g.drawImage(coin.getImage(), coin.getxCoord(), coin.getyCoord(), null); // draw Coin
@@ -87,38 +85,39 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         g.drawString(player.getName() + "'s Score: " + player.getScore(), 20, 40);
         g.drawString("Time: " + time, 20, 70);
         reset.setLocation(20, 110);
-        pause.setLocation(20, 130);
+        pause.setLocation(20, 140);
 
 
-        if(player.getScore() >= 10){
+        if (player.getScore() >= 10) {
             player.setLeft("src/mariofrogleft.png");
             player.setRight("src/mariofrogright.png");
-        }
-        else{
+        } else {
             player.setLeft("src/marioleft.png");
             player.setRight("src/marioright.png");
         }
+        if (!paused) {
 
-        // player moves left (A)
-        if (pressedKeys[65]) {
-            player.faceLeft();
-            player.moveLeft();
-        }
+            // player moves left (A)
+            if (pressedKeys[65]) {
+                player.faceLeft();
+                player.moveLeft();
+            }
 
-        // player moves right (D)
-        if (pressedKeys[68]) {
-            player.faceRight();
-            player.moveRight();
-        }
+            // player moves right (D)
+            if (pressedKeys[68]) {
+                player.faceRight();
+                player.moveRight();
+            }
 
-        // player moves up (W)
-        if (pressedKeys[87]) {
-            player.moveUp();
-        }
+            // player moves up (W)
+            if (pressedKeys[87]) {
+                player.moveUp();
+            }
 
-        // player moves down (S)
-        if (pressedKeys[83]) {
-            player.moveDown();
+            // player moves down (S)
+            if (pressedKeys[83]) {
+                player.moveDown();
+            }
         }
     }
 
@@ -146,16 +145,14 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     public void mousePressed(MouseEvent e) { } // unimplemented
 
     public void mouseReleased(MouseEvent e) {
-        if(!paused) {
-            if (e.getButton() == MouseEvent.BUTTON1) {  // left mouse click
-                Point mouseClickLocation = e.getPoint();
-                Coin coin = new Coin(mouseClickLocation.x, mouseClickLocation.y);
-                coins.add(coin);
-            } else {
-                Point mouseClickLocation = e.getPoint();
-                if (player.playerRect().contains(mouseClickLocation)) {
-                    player.turn();
-                }
+        if (e.getButton() == MouseEvent.BUTTON1) {  // left mouse click
+            Point mouseClickLocation = e.getPoint();
+            Coin coin = new Coin(mouseClickLocation.x, mouseClickLocation.y);
+            coins.add(coin);
+        } else {
+            Point mouseClickLocation = e.getPoint();
+            if (player.playerRect().contains(mouseClickLocation)) {
+                player.turn();
             }
         }
     }
@@ -189,6 +186,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
                 else{
                     paused = false;
                 }
+                requestFocusInWindow();
             }
             requestFocusInWindow();
         }
